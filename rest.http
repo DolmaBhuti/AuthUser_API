@@ -1,0 +1,38 @@
+GET http://localhost:3000
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDAzMjcyOTQsImV4cCI6MTcwMDMyNzM1NCwiYXVkIjpbIjY1NTZjYTc0YzJjMWY1NDkxZDU0MzBjYyJdLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9._zz3hLt4RYSP0OG-nuZ-ab6eph4ZgbjV8iES_-W6oWk
+### non existent route
+GET http://localhost:3000/abc_xyz
+
+### auth route
+
+#### login
+POST http://localhost:3000/api/auth/login 
+Content-Type: application/json
+
+{
+  "email": "test5@gmail.com",
+  "password": "23456wertg"
+}
+#### register
+POST http://localhost:3000/api/auth/register 
+Content-Type: application/json
+
+{
+  "email": "test7@gmail.com",
+  "password": "23456wertg",
+  "confirm_password": "23456wertg"
+}
+#### logout
+DELETE http://localhost:3000/api/auth/logout
+Content-Type: application/json
+
+{
+  "refreshToken":  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDAzMjcxMDQsImV4cCI6MTczMTg4NDcwNCwiYXVkIjpbIjY1NTZjYTc0YzJjMWY1NDkxZDU0MzBjYyJdLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.XkcTAtVR6fJlgpxoKXaQkPwVOoq-yN1JkR-ylNpTQyU"
+  }
+#### jwt refresh-token
+POST http://localhost:3000/api/auth/refresh-token
+Content-Type: application/json
+
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDAzMjQ2NDgsImV4cCI6MTczMTg4MjI0OCwiYXVkIjpbIjY1NTZjYTc0YzJjMWY1NDkxZDU0MzBjYyJdLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.oHwu6FxL4uWT5RVpyLTtPpMrwr0DlWT3AY6-SE1ZpmE"
+}
