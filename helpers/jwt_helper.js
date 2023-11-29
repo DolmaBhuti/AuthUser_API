@@ -81,12 +81,14 @@ module.exports = {
           client.GET(userId.toString(), (err, result) => {
             if (err) {
               console.log(err.message);
-              reject(createError.InternalServerError());
+              reject(createError.InternalServerError()); //this error means that there is an internal error within your server/redis
+
               return;
             }
             if (refreshToken === result) {
               return resolve(userId.toString());
             }
+            //token coming from redis and the token from the function does not match
             reject(createError.Unauthorized());
           });
           resolve(userId);
