@@ -2,9 +2,11 @@ const redis = require("redis");
 
 //initialize a client at the very beginning of this file
 const client = redis.createClient({
-  host: process.env.REDIS_HOSTNAME,
-  port: process.env.REDIS_PORT,
   password: process.env.REDIS_PASSWORD,
+  socket: {
+    host: process.env.REDIS_HOSTNAME,
+    port: process.env.REDIS_PORT,
+  },
 });
 client.connect();
 
