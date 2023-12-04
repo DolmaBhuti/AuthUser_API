@@ -9,8 +9,8 @@ module.exports = {
       const payload = {};
       const secret = process.env.ACCESS_TOKEN_SECRET;
       const options = {
-        expiresIn: "1m",
-        issuer: "pickurpage.com",
+        expiresIn: "10h",
+        issuer: "https://auth-user-api.fly.dev",
         audience: [userId],
       };
       JWT.sign(payload, secret, options, (err, token) => {
