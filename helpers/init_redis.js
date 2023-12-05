@@ -1,4 +1,4 @@
-const redis = require("redis");
+const redis = require("ioredis");
 
 //initialize a client at the very beginning of this file
 const client = redis.createClient({
@@ -8,11 +8,8 @@ const client = redis.createClient({
 });
 
 client.on("connect", () => {
-  console.log(
-    `Connected to Redis on ${process.env.REDIS_HOSTNAME}:${process.env.REDIS_PORT}`
-  );
+  console.log("client connected to Redis");
 });
-
 client.on("ready", () => {
   console.log("Client connected to Redis and ready to use...");
 });

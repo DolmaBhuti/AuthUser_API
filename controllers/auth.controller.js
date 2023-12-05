@@ -45,25 +45,31 @@ module.exports = {
     }
   },
   login: async (req, res, next) => {
-    console.log("login route");
-
     try {
+      console.log("login route");
+
       const result = await authSchema.validateAsync(req.body);
       const userExists = await userModel.findOne({ email: result.email });
-
       if (!userExists) throw createError.NotFound("User not registered");
 
       const isMatch = await userExists.isValidPassword(result.password);
-      if (!isMatch)
+      if (!isMatch) {
         throw createError.Unauthorized("username/password not valid");
+      }
+      console.log(" before signing tokens in login route");
 
       const accessToken = await signAccessToken(userExists._id);
+
       const refreshToken = await signRefreshToken(userExists._id);
+
+      console.log({ accessToken });
+      console.log({ refreshToken });
 
       res.json({ accessToken, refreshToken });
     } catch (error) {
-      if (error.isJoi === true)
+      if (error.isJoi === true) {
         return next(createError.BadRequest("Invalid Username or password"));
+      }
       next(error);
     }
   },
@@ -88,22 +94,22 @@ module.exports = {
       const { refreshToken } = req.body;
       if (!refreshToken) throw createError.BadRequest();
       const userId = await verifyRefreshToken(refreshToken);
-
-      client.DEL(userId, (err, result) => {
+      client.del(userId, (err, val) => {
         if (err) {
           console.log(err.message);
           throw createError.InternalServerError();
         }
-        console.log(result);
+        console.log(val);
+        res.json("Log out successful");
       });
-      res.status(204).send("Logged out");
     } catch (error) {
       next(error);
     }
   },
+
   addFavouriteSong: async (req, res, next) => {
     // user id info in req.payload.
-
+    console.log("in addFavouriteSong controller.");
     try {
       const userId = req.payload.aud[0];
       const favId = req.params.id;
@@ -118,12 +124,15 @@ module.exports = {
           if (!user) {
             return next(createError.InternalServerError());
           }
+          console.log("User favourites updated");
           res.json(user.favourites);
         })
         .catch((err) => {
+          console.log("User favourites could not be updated");
           return next(createError.InternalServerError());
         });
     } catch (error) {
+      console.log(error.message);
       next(error);
     }
   },
@@ -138,6 +147,7 @@ module.exports = {
           if (!user) {
             return next(createError.InternalServerError());
           }
+          console.log("user and favourites found.");
           res.json(user.favourites);
         })
         .catch((err) => {

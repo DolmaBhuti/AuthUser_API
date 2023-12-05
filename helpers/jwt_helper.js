@@ -10,7 +10,7 @@ module.exports = {
       const secret = process.env.ACCESS_TOKEN_SECRET;
       const options = {
         expiresIn: "10h",
-        issuer: "https://auth-user-api.fly.dev",
+        issuer: "pickurpage.com",
         audience: [userId],
       };
       JWT.sign(payload, secret, options, (err, token) => {
@@ -50,25 +50,25 @@ module.exports = {
       JWT.sign(payload, secret, options, (err, token) => {
         if (err) {
           console.log(err.message);
+          // reject(err)
           reject(createError.InternalServerError());
-          return;
         }
+        console.log(" after signing refresh tokens in login route");
 
-        client.SET(userId.toString(), token, (err, reply) => {
+        client.set(userId, token, "EX", 365 * 24 * 60 * 60, (err, reply) => {
           if (err) {
             console.log(err.message);
             reject(createError.InternalServerError());
             return;
           }
+          console.log(" in client set function");
+
+          resolve(token);
         });
-
-        //token will expire in 1 year
-        client.expire(userId.toString(), 31536000);
-
-        resolve(token);
       });
     });
   },
+
   verifyRefreshToken: (refreshToken) => {
     return new Promise((resolve, reject) => {
       JWT.verify(
@@ -78,7 +78,7 @@ module.exports = {
           if (err) return reject(createError.Unauthorized());
 
           const userId = payload.aud;
-          client.GET(userId.toString(), (err, result) => {
+          client.get(userId.toString(), (err, result) => {
             if (err) {
               console.log(err.message);
               reject(createError.InternalServerError()); //this error means that there is an internal error within your server/redis
